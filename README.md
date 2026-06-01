@@ -179,7 +179,7 @@ cp -r workout-claude-skill ~/.claude/skills/운동기록
 
 ## 📄 라이선스
 
-MIT License — 자유롭게 사용, 수정, 배포 가능합니다.
+[CC BY 4.0](LICENSE) — 사용, 수정, 배포 시 **반드시 원저작자(korleinster) 출처를 표기**해야 합니다.
 
 ---
 
