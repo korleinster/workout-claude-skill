@@ -171,9 +171,9 @@ cp -r workout-claude-skill ~/.claude/skills/운동기록
 
 ## ☕ 후원
 
-이 스킬이 운동 기록에 도움이 됐다면 커피 한 잔 사주세요!
+이 스킬이 운동 기록에 도움이 됐다면 후원해 주세요!
 
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-☕-yellow?style=for-the-badge&logo=buy-me-a-coffee)](https://buymeacoffee.com/korleinster)
+[![GitHub Sponsors](https://img.shields.io/badge/GitHub%20Sponsors-❤️-ea4aaa?style=for-the-badge&logo=github-sponsors)](https://github.com/sponsors/korleinster)
 
 ---
 
