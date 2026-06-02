@@ -1,211 +1,211 @@
-# 🏋️ 운동기록 — Claude Code Skill
+# 🏋️ Workout Log — Claude Code Skill
 
-애플 피트니스 스크린샷 한 장으로 노션 운동 기록을 자동화하는 **Claude Code 스킬**.
+A **Claude Code skill** that automates workout logging in Notion from a single Apple Fitness screenshot.
 
-운동 후 피트니스 앱 요약 화면을 캡처해서 Claude에게 보내면, 데이터를 자동으로 파싱해 노션 월별 페이지에 기록하고 이전 운동 기록과 비교한 AI 트레이너 피드백까지 달아줍니다.
+After your workout, take a screenshot of the Fitness app summary screen and send it to Claude. It automatically parses the data, logs it to your monthly Notion page, and adds AI trainer feedback comparing it to your previous sessions.
 
 ---
 
-## ✨ 주요 기능
+## ✨ Features
 
-| 기능 | 설명 |
+| Feature | Description |
 |------|------|
-| 📸 이미지 자동 파싱 | 애플 피트니스 요약 화면에서 날짜, 운동 종류, 시간, BPM, 칼로리, 강도 자동 추출 |
-| 🏃 운동 종류 자동 인식 | 실내 사이클링→사이클, 달리기→런닝, 근력→웨이트 등 자동 매핑 |
-| ➕ 복합 운동 통합 | 같은 날 여러 운동 → 한 행에 합산 (사이클+런닝, 칼로리 합계 등) |
-| 📝 메모 자동 취합 | 이미지 외 텍스트 입력 내용이 메모 컬럼으로 자동 저장 |
-| 🗂️ 노션 월별 자동 정리 | 월이 바뀌면 새 페이지 자동 생성, 이전 달 데이터 유지 |
-| 🔄 컬럼 자동 확장 | 기존 테이블에 컬럼이 없으면 자동 추가 |
-| 📊 이전 기록 비교 피드백 | 직전 3~5회 운동과 비교해 추세·변화·목표 진행률 분석 |
-| 🔀 월 경계 자동 연결 | 월 초 기록 시 직전 달 페이지를 자동 참조해 비교 끊김 없음 |
-| 💬 트레이너 피드백 노션 기록 | 피드백이 노션 테이블 컬럼에도 자동 저장 |
+| 📸 Auto image parsing | Extracts date, workout type, duration, BPM, calories, and intensity from Apple Fitness summary |
+| 🏃 Workout type recognition | Auto-maps Indoor Cycling→Cycle, Running→Run, Strength→Weights, etc. |
+| ➕ Combined workout merging | Multiple workouts on the same day → merged into one row (Cycle+Run, total calories, etc.) |
+| 📝 Auto memo capture | Any text you type alongside the image is saved to the memo column |
+| 🗂️ Monthly Notion auto-organization | Creates a new page automatically when the month changes, keeps previous data |
+| 🔄 Auto column expansion | Automatically adds missing columns to existing tables |
+| 📊 Progress comparison feedback | Analyzes trends and changes compared to the last 3–5 sessions |
+| 🔀 Month-boundary linking | Auto-references the previous month's page on the first entry of a new month |
+| 💬 Trainer feedback saved to Notion | Feedback is also automatically saved to a Notion table column |
 
 ---
 
-## 📋 노션 테이블 구조
+## 📋 Notion Table Structure
 
-| 날짜 | 운동 종류 | 시간 | 강도 | 평균BPM | 최고BPM | 칼로리 | 체중 | 메모 | 트레이너 피드백 |
+| Date | Workout | Duration | Intensity | Avg BPM | Max BPM | Calories | Weight | Memo | Trainer Feedback |
 |------|----------|------|------|---------|---------|--------|------|------|----------------|
-| 6/1(월) | 사이클 | 30분 | 6(보통) | 145 | 167 | 348kcal | 88.2kg | | 평균 BPM 145로 심폐 강화 존에서... |
-| 6/4(목) | 사이클+런닝 | 50분 | 7(어려움) | 152 | 171 | 490kcal | - | 허리 약간 뻐근 | 직전 운동 대비 칼로리 41% 증가... |
+| 6/1 (Mon) | Cycle | 30 min | 6 (Moderate) | 145 | 167 | 348 kcal | 88.2 kg | | Avg BPM 145, solid cardio zone session... |
+| 6/4 (Thu) | Cycle+Run | 50 min | 7 (Hard) | 152 | 171 | 490 kcal | - | Slight lower back soreness | Calories up 41% vs last session... |
 
 ---
 
-## 🗂️ 노션 페이지 자동 구성
+## 🗂️ Notion Page Auto-Structure
 
 ```
-운동 (루트 페이지)
-  └ 2026년
-       └ 2026년_05  ← 이전 달 (비교 참조용)
-       └ 2026년_06  ← 현재 월에 자동 기록
-       └ 2026년_07  ← 7월이 되면 빈 테이블로 자동 생성
+Workout (root page)
+  └ 2026
+       └ 2026_05  ← previous month (used for comparison)
+       └ 2026_06  ← current month, auto-logged
+       └ 2026_07  ← auto-created as empty table when July starts
 ```
 
-월이 바뀌면 새 페이지를 빈 테이블로 자동 생성합니다. 새 달 첫 기록 시 이전 달 페이지를 자동으로 참조해 트레이너 피드백 비교가 끊김 없이 이어집니다.
+A new page is created as an empty table when the month changes. On the first entry of a new month, the previous month's page is automatically referenced so trainer feedback comparisons continue without interruption.
 
-| 상황 | 동작 |
+| Situation | Behavior |
 |------|------|
-| 월 중반 (기록 3회 이상) | 현재 월 페이지만 참조 |
-| 월 초 (기록 3회 미만) | 현재 월 + 직전 달 페이지 자동 fetch → 마지막 기록부터 역순 보충 |
-| 완전한 첫 기록 | 비교 없이 오늘 데이터만으로 피드백 작성 |
+| Mid-month (3+ entries) | References current month page only |
+| Early month (fewer than 3 entries) | Auto-fetches current + previous month → fills from last entry backwards |
+| Very first entry | Writes feedback from today's data only, no comparison |
 
 ---
 
-## 💡 트레이너 피드백 예시
+## 💡 Trainer Feedback Example
 
 ```
-평균 BPM 145로 심폐 강화 존(140~160)에서 운동하셨고,
-최고 BPM 167까지 도달한 고강도 세션이었습니다.
-지난 운동(5/29) 대비 평균BPM이 5 상승해 심폐 부하가 꾸준히 늘고 있어요.
-최근 3회 평균 327kcal로 소모량도 안정적으로 유지되고 있습니다.
-체중 88.2kg, 목표 80kg까지 8.2kg 남았고 현재 페이스라면 6~8주 내 도달 가능합니다.
-다음 운동에서는 130rpm 구간을 30초→45초로 늘려 인터벌 강도를 한 단계 올려보세요!
+You trained in the cardio zone (140–160 BPM) with an average of 145 BPM,
+reaching a peak of 167 BPM — a high-intensity session.
+Average BPM rose by 5 compared to your last workout (5/29), showing steady cardio load increase.
+Your recent 3-session average calorie burn is a stable 327 kcal.
+At 88.2 kg with a goal of 80 kg, you have 8.2 kg to go — at this pace, achievable in 6–8 weeks.
+For your next session, try extending the 130 rpm interval from 30s to 45s to step up intensity!
 ```
 
-**BPM 존 기준:**
+**BPM Zone Reference:**
 
-| 구간 | 존 | 설명 |
+| Range | Zone | Description |
 |------|-----|------|
-| ~120 BPM | 지방 연소 존 | 저강도 |
-| 120~140 BPM | 유산소 존 | 적정 |
-| 140~160 BPM | 심폐 강화 존 | 다이어트 효과적 ✅ |
-| 160+ BPM | 최대 심박 존 | 매우 고강도 |
+| ~120 BPM | Fat Burn Zone | Low intensity |
+| 120–140 BPM | Aerobic Zone | Comfortable |
+| 140–160 BPM | Cardio Zone | Effective for fat loss ✅ |
+| 160+ BPM | Peak Zone | Very high intensity |
 
 ---
 
-## 🚀 설치 방법
+## 🚀 Installation
 
-### 1. Claude Code 설치
+### 1. Install Claude Code
 
-[Claude Code 공식 문서](https://docs.anthropic.com/claude-code)를 참고해 설치합니다.
+Follow the [Claude Code official docs](https://docs.anthropic.com/claude-code) to install.
 
-### 2. 스킬 다운로드
+### 2. Download the skill
 
 ```bash
 git clone https://github.com/korleinster/workout-claude-skill.git
 ```
 
-### 3. 노션 MCP 연결
+### 3. Connect Notion MCP
 
-Claude Code에서 노션 MCP를 연결합니다:
+Connect the Notion MCP in Claude Code:
 
-1. Claude Code 설정 → MCP Servers
-2. Notion MCP 추가 및 노션 계정 연동
+1. Claude Code Settings → MCP Servers
+2. Add Notion MCP and link your Notion account
 
-### 4. 노션 페이지 준비
+### 4. Prepare your Notion page
 
-노션에서 아래 구조로 페이지를 만듭니다:
-
-```
-운동           ← 루트 페이지
-  └ 2026년     ← 연도 페이지
-```
-
-월별 페이지(`2026년_06` 등)는 스킬이 자동으로 생성합니다.
-
-### 5. SKILL.md 설정
-
-`SKILL.md` 파일의 **노션 구조** 섹션에서 두 ID를 본인 페이지 ID로 교체합니다:
+Create the following structure in Notion:
 
 ```
-ROOT_PAGE_ID  → 운동 루트 페이지 ID
-YEAR_PAGE_ID  → 연도 페이지 ID (예: 2026년 페이지)
+Workout           ← root page
+  └ 2026          ← year page
 ```
 
-노션 URL에서 ID 확인 방법:
+Monthly pages (e.g. `2026_06`) are created automatically by the skill.
+
+### 5. Configure SKILL.md
+
+In the **Notion Structure** section of `SKILL.md`, replace the two IDs with your own page IDs:
+
 ```
-https://www.notion.so/workspace/페이지제목-[여기가 ID]
+ROOT_PAGE_ID  → your Workout root page ID
+YEAR_PAGE_ID  → your year page ID (e.g. 2026 page)
 ```
 
-### 6. 사용자 프로필 수정
+How to find the ID from a Notion URL:
+```
+https://www.notion.so/workspace/page-title-[ID is here]
+```
 
-`SKILL.md` 6단계 "사용자 정보" 섹션에 본인 정보를 입력합니다:
+### 6. Update your profile
+
+Fill in your info in the "User Info" section (step 6) of `SKILL.md`:
 
 ```markdown
-- 키: 187cm / 현재 체중: 88kg / 목표: 80kg
-- 운동: 실내 사이클링 주 3회
-- 인터벌: 90rpm 1분 → 110rpm 2분 → 130rpm 30초
-- 식단: 밀가루 줄인 한식 + 양 조절
+- Height: 187 cm / Current weight: 88 kg / Goal: 80 kg
+- Workout: Indoor cycling 3× per week
+- Intervals: 90 rpm 1 min → 110 rpm 2 min → 130 rpm 30 sec
+- Diet: Korean food with less flour + portion control
 ```
 
-### 7. 스킬 등록
+### 7. Register the skill
 
 ```bash
-# Claude Code 스킬 디렉토리에 복사
-cp -r workout-claude-skill ~/.claude/skills/운동기록
+# Copy to Claude Code skills directory
+cp -r workout-claude-skill ~/.claude/skills/workout-log
 ```
 
 ---
 
-## 📱 사용 방법
+## 📱 Usage
 
-### 기본 사용
+### Basic usage
 
-운동 후 **애플 피트니스 앱** → 운동 요약 화면 스크린샷을 찍고:
-
-```
-/운동기록 [스크린샷 첨부]
-```
-
-### 체중 추가
+After your workout, take a screenshot of the **Apple Fitness app** summary screen and run:
 
 ```
-/운동기록 오늘 체중 87.5kg [스크린샷 첨부]
+/workout-log [attach screenshot]
 ```
 
-### 메모 추가
+### Add weight
 
 ```
-/운동기록 오늘 허리 조금 뻐근했음 [스크린샷 첨부]
+/workout-log today's weight 87.5 kg [attach screenshot]
 ```
 
-이미지 외에 입력한 텍스트는 모두 **메모 컬럼**에 자동 저장됩니다.
-
-### 복합 운동 (같은 날 여러 운동)
+### Add a memo
 
 ```
-/운동기록 [사이클 스크린샷] [런닝 스크린샷]
+/workout-log slight lower back soreness today [attach screenshot]
 ```
 
-같은 날 여러 운동은 **한 행에 합산** 기록됩니다 (`사이클+런닝`, 칼로리 합계 등).
+Any text you type alongside the image is automatically saved to the **memo column**.
+
+### Combined workouts (multiple on the same day)
+
+```
+/workout-log [cycling screenshot] [running screenshot]
+```
+
+Multiple workouts on the same day are **merged into a single row** (`Cycle+Run`, total calories, etc.).
 
 ---
 
-## 📸 지원하는 스크린샷 형식
+## 📸 Supported Screenshot Format
 
-애플 피트니스 앱의 운동 요약 화면을 지원합니다:
+Supports the workout summary screen from the Apple Fitness app:
 
 ```
 ┌─────────────────────────┐
-│     6월 1일 (월)         │
-│  실내 사이클링            │
+│     June 1 (Mon)        │
+│  Indoor Cycling         │
 │  11:18–11:49            │
 ├─────────────────────────┤
-│ 운동 시간    활동 칼로리   │
-│ 0:30:36    290KCAL      │
-│ 총 칼로리   평균 심박수    │
-│ 348KCAL   145BPM       │
+│ Duration    Active Cal  │
+│ 0:30:36    290 KCAL     │
+│ Total Cal   Avg BPM     │
+│ 348 KCAL   145 BPM      │
 ├─────────────────────────┤
-│ 운동 강도: 6 보통         │
+│ Effort: 6 Moderate      │
 └─────────────────────────┘
 ```
 
 ---
 
-## ☕ 후원
+## ☕ Sponsor
 
-이 스킬이 운동 기록에 도움이 됐다면 후원해 주세요!
+If this skill has helped your workout logging, consider sponsoring!
 
 [![GitHub Sponsors](https://img.shields.io/badge/GitHub%20Sponsors-❤️-ea4aaa?style=for-the-badge&logo=github-sponsors)](https://github.com/sponsors/korleinster)
 
 ---
 
-## 📄 라이선스
+## 📄 License
 
-[CC BY 4.0](LICENSE) — 사용, 수정, 배포 시 **반드시 원저작자(korleinster) 출처를 표기**해야 합니다.
+[CC BY 4.0](LICENSE) — When using, modifying, or distributing, **you must credit the original author (korleinster)**.
 
 ---
 
-## 🤝 기여
+## 🤝 Contributing
 
-이슈 및 PR 환영합니다! 새로운 운동 앱 지원, 피드백 로직 개선 등 어떤 기여도 좋습니다.
+Issues and PRs are welcome! Contributions of any kind are appreciated — new workout app support, improved feedback logic, and more.
